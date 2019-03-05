@@ -86,6 +86,9 @@ class CfnResource(object):
         except Exception as e:
             logger.error(e, exc_info=True)
             self._send(FAILED, str(e))
+        finally:
+            if self._timer:
+                self._timer.cancel()
 
     def _wait_for_cwlogs(self, sleep=sleep):
         sleep_time = int(self._context.get_remaining_time_in_millis() / 1000) - 15
@@ -195,7 +198,7 @@ class CfnResource(object):
 
     def _set_timeout(self):
         self._timer = threading.Timer((self._context.get_remaining_time_in_millis() / 1000.00) - 0.5,
-                                      self._timeout, args=[self._event, self._context, logger])
+                                      self._timeout)
         self._timer.start()
 
     def _get_func(self):
