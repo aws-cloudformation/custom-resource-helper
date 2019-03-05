@@ -43,6 +43,7 @@ class MockContext(object):
 class TestCfnResource(unittest.TestCase):
 
     @patch('crhelper.log_helper.setup', return_value=None)
+    @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
     def test_init(self, mock_method):
         crhelper.resource_helper.CfnResource()
         mock_method.assert_called_once_with('DEBUG', boto_level='ERROR', formatter_cls=None)
@@ -51,6 +52,7 @@ class TestCfnResource(unittest.TestCase):
         mock_method.assert_called_with('DEBUG', boto_level='ERROR', RequestType='ContainerInit')
 
     @patch('crhelper.log_helper.setup', return_value=None)
+    @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
     def test_init_failure(self, mock_method):
         mock_method.side_effect = Exception("test")
         c = crhelper.resource_helper.CfnResource(json_logging=True)
@@ -119,8 +121,8 @@ class TestCfnResource(unittest.TestCase):
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
     @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
     @patch('crhelper.resource_helper.CfnResource._wrap_function', Mock())
-    @patch('crhelper.resource_helper.CfnResource._cfn_response', return_value=None)
-    def test_polling_init(self, cfn_response_mock):
+    @patch('crhelper.resource_helper.CfnResource._cfn_response', Mock())
+    def test_polling_init(self):
         c = crhelper.resource_helper.CfnResource()
         event = test_events['Create']
         c._setup_polling = Mock()
@@ -169,6 +171,7 @@ class TestCfnResource(unittest.TestCase):
         self.assertEqual(orig_pid, '')
         c._cfn_response(event)
         c._send.assert_called_once()
+        print("RID: [%s]" % [c.PhysicalResourceId])
         self.assertEqual(True, c.PhysicalResourceId.startswith('test-stack-id_TestResourceId_'))
 
         c._send = Mock()
@@ -246,11 +249,13 @@ class TestCfnResource(unittest.TestCase):
         t = threading.Timer(1000, func)
         self.assertEqual(type(t), type(c._timer))
         t.cancel()
+        c._timer.cancel()
 
     @patch('crhelper.log_helper.setup', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
+    @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
     def test_cleanup_response(self):
         c = crhelper.resource_helper.CfnResource()
         c.Data = {"CrHelperPoll": 1, "CrHelperPermission": 2, "CrHelperRule": 3}
@@ -261,6 +266,7 @@ class TestCfnResource(unittest.TestCase):
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
+    @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
     def test_remove_polling(self):
         c = crhelper.resource_helper.CfnResource()
         c._context = MockContext()
@@ -288,6 +294,7 @@ class TestCfnResource(unittest.TestCase):
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
+    @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
     def test_setup_polling(self):
         c = crhelper.resource_helper.CfnResource()
         c._context = MockContext()

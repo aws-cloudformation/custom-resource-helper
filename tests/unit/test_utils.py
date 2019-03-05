@@ -1,7 +1,6 @@
 from unittest.mock import Mock
 from crhelper import utils
 import unittest
-import logging
 
 
 class TestLogHelper(unittest.TestCase):
