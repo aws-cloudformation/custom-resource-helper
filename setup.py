@@ -11,15 +11,27 @@ limitations under the License.
 
 from setuptools import setup, find_packages
 
+
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
+
 setup(
     name="crhelper",
-    version="1.0.0",
+    version="2.0.0",
     description="crhelper simplifies authoring CloudFormation Custom Resources",
-    url="https://github.com/awslabs/aws-cloudformation-templates/tree/master/community/custom_resources/python_custom_resource_helper",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/aws-cloudformation/custom-resource-helper",
     author="Jay McConnell",
     author_email="jmmccon@amazon.com",
     license="Apache2",
     packages=find_packages(),
     tests_require=["boto3"],
-    test_suite="tests"
+    test_suite="tests",
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: OS Independent",
+    ],
 )
