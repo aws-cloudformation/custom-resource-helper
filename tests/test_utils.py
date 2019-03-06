@@ -1,6 +1,7 @@
 from unittest.mock import Mock
 from crhelper import utils
 import unittest
+import json
 
 
 class TestLogHelper(unittest.TestCase):
@@ -11,8 +12,6 @@ class TestLogHelper(unittest.TestCase):
         p.assert_called_once()
         p = Mock()
         utils._send_response("test_url", p, put=p)
-        p.assert_called_with(
-            'test_url',
-            data='{"Status": "FAILED", "Data": {}, "Reason": "Failed to convert response to json: Object of type \'Mock\' is not JSON serializable"}',
-            headers={'content-type': '', 'content-length': '128'}
-        )
+        response = json.loads(p.call_args[1]['data'])
+        self.assertEqual("FAILED", response['Status'])
+        self.assertEqual({}, response['Data'])
