@@ -1,0 +1,5 @@
+/.idea/
+/venv/
+/.eggs/
+__pycache__
+*.pyc
