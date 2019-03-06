@@ -21,5 +21,5 @@ setup(
     license="Apache2",
     packages=find_packages(),
     tests_require=["boto3"],
-    test_suite="tests.unit"
+    test_suite="tests"
 )
