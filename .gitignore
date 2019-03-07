@@ -3,3 +3,4 @@
 /.eggs/
 __pycache__
 *.pyc
+/dist/
