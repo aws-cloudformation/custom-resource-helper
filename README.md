@@ -15,7 +15,12 @@ particular CloudFormation event
  
 ## Installation
 
-pip install coming soon. Until then copy the `crhelper` directory into the root of your lambda package.
+Install into the root folder of your lambda function
+
+```json
+cd my-lambda-function/
+pip install crhelper -t .
+```
 
 ## Example Usage
 
