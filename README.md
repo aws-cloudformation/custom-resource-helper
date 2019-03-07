@@ -3,6 +3,8 @@
 Simplify best practice Custom Resource creation, sending responses to CloudFormation and providing exception, timeout 
 trapping, and detailed configurable logging.
 
+[![Build Status](https://travis-ci.com/aws-cloudformation/custom-resource-helper.svg?branch=master)](https://travis-ci.com/aws-cloudformation/custom-resource-helper)
+
 ## Features
 
 * Dead simple to use, reduces the complexity of writing a CloudFormation custom resource
