@@ -4,3 +4,7 @@
 __pycache__
 *.pyc
 /dist/
+.coverage
+coverage.xml
+/.pytest_cache/
+/build/

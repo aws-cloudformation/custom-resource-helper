@@ -3,9 +3,10 @@ language: python
 python:
   - "3.6"
   - "3.7"
-# command to install dependencies
 install:
   - pip install -r requirements.txt
   - pip install .
-# command to run tests
-script: pytest
+  - pip install pytest-cov codecov
+script: pytest --cov=./
+after_success:
+  - codecov --token=$CODECOV_TOKEN
