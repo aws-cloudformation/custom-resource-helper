@@ -298,6 +298,27 @@ class TestCfnResource(unittest.TestCase):
     def test_setup_polling(self):
         c = crhelper.resource_helper.CfnResource()
         c._context = MockContext()
+        c._event = test_events["Update"]
         c._lambda_client.add_permission = Mock()
-        c._events_client.put_rule = Mock()
+        c._events_client.put_rule = Mock(return_value={"RuleArn": "arn:aws:lambda:blah:blah:function:blah/blah"})
         c._events_client.put_targets = Mock()
+        c._setup_polling()
+        c._events_client.put_targets.assert_called()
+        c._events_client.put_rule.assert_called()
+        c._lambda_client.add_permission.assert_called()
+
+    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
+    @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
+    @patch('crhelper.resource_helper.CfnResource._send', Mock())
+    @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
+    def test_wrappers(self):
+        c = crhelper.resource_helper.CfnResource()
+
+        def func():
+            pass
+
+        for f in ["create", "update", "delete", "poll_create", "poll_update", "poll_delete"]:
+            self.assertEqual(None, getattr(c, "_%s_func" % f))
+            getattr(c, f)(func)
+            self.assertEqual(func, getattr(c, "_%s_func" % f))
