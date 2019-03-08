@@ -3,6 +3,8 @@
 Simplify best practice Custom Resource creation, sending responses to CloudFormation and providing exception, timeout 
 trapping, and detailed configurable logging.
 
+[![PyPI Version](https://img.shields.io/pypi/v/crhelper.svg)](https://pypi.org/project/crhelper/)
+![Python Versions](https://img.shields.io/pypi/pyversions/crhelper.svg)
 [![Build Status](https://travis-ci.com/aws-cloudformation/custom-resource-helper.svg?branch=master)](https://travis-ci.com/aws-cloudformation/custom-resource-helper)
 
 ## Features
