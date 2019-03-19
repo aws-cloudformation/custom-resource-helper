@@ -51,7 +51,9 @@ class TestCfnResource(unittest.TestCase):
             crhelper.resource_helper.CfnResource()
         mock_method.assert_called_once_with('DEBUG', boto_level='ERROR', formatter_cls=None)
 
-        crhelper.resource_helper.CfnResource(json_logging=True)
+        with support.EnvironmentVarGuard() as environ: 
+            environ.set('AWS_REGION', 'us-east-1')
+            crhelper.resource_helper.CfnResource(json_logging=True)
         mock_method.assert_called_with('DEBUG', boto_level='ERROR', RequestType='ContainerInit')
 
     @patch('crhelper.log_helper.setup', return_value=None)
