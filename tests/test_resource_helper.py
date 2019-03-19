@@ -48,7 +48,7 @@ class TestCfnResource(unittest.TestCase):
     def test_init(self, mock_method):
         with support.EnvironmentVarGuard() as environ: 
             environ.set('AWS_REGION', 'us-east-1')
-        crhelper.resource_helper.CfnResource()
+            crhelper.resource_helper.CfnResource()
         mock_method.assert_called_once_with('DEBUG', boto_level='ERROR', formatter_cls=None)
 
         crhelper.resource_helper.CfnResource(json_logging=True)
