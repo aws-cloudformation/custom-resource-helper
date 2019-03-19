@@ -26,7 +26,7 @@ FAILED = 'FAILED'
 
 class CfnResource(object):
 
-    def __init__(self, json_logging=False, log_level='DEBUG', boto_level='ERROR', polling_interval=2, region_name='us-east-1'):
+    def __init__(self, json_logging=False, log_level='DEBUG', boto_level='ERROR', polling_interval=2):
         self._create_func = None
         self._update_func = None
         self._delete_func = None
@@ -51,12 +51,12 @@ class CfnResource(object):
         self._context = None
         self._response_url = ""
         self._sam_local = os.getenv('AWS_SAM_LOCAL')
-        self._region_name = os.getenv('AWS_DEFAULT_REGION', region_name)
+        self._region = os.getenv('AWS_REGION')
         try:
             if not self._sam_local:
-                self._lambda_client = boto3.client('lambda', region_name=self._region_name)
-                self._events_client = boto3.client('events', region_name=self._region_name)
-                self._logs_client = boto3.client('logs', region_name=self._region_name)
+                self._lambda_client = boto3.client('lambda', region_name=self._region)
+                self._events_client = boto3.client('events', region_name=self._region)
+                self._logs_client = boto3.client('logs', region_name=self._region)
             if json_logging:
                 log_helper.setup(log_level, boto_level=boto_level, RequestType='ContainerInit')
             else:
