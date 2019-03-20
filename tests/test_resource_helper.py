@@ -1,4 +1,5 @@
 import crhelper
+from test import support
 import unittest
 from unittest.mock import patch, Mock
 import threading
@@ -45,10 +46,14 @@ class TestCfnResource(unittest.TestCase):
     @patch('crhelper.log_helper.setup', return_value=None)
     @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
     def test_init(self, mock_method):
-        crhelper.resource_helper.CfnResource()
+        with support.EnvironmentVarGuard() as environ: 
+            environ.set('AWS_REGION', 'us-east-1')
+            crhelper.resource_helper.CfnResource()
         mock_method.assert_called_once_with('DEBUG', boto_level='ERROR', formatter_cls=None)
 
-        crhelper.resource_helper.CfnResource(json_logging=True)
+        with support.EnvironmentVarGuard() as environ: 
+            environ.set('AWS_REGION', 'us-east-1')
+            crhelper.resource_helper.CfnResource(json_logging=True)
         mock_method.assert_called_with('DEBUG', boto_level='ERROR', RequestType='ContainerInit')
 
     @patch('crhelper.log_helper.setup', return_value=None)
@@ -268,7 +273,9 @@ class TestCfnResource(unittest.TestCase):
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
     @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
     def test_remove_polling(self):
-        c = crhelper.resource_helper.CfnResource()
+        with support.EnvironmentVarGuard() as environ: 
+            environ.set('AWS_REGION', 'us-east-1')
+            c = crhelper.resource_helper.CfnResource()
         c._context = MockContext()
 
         c._events_client.remove_targets = Mock()
@@ -296,7 +303,9 @@ class TestCfnResource(unittest.TestCase):
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
     @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
     def test_setup_polling(self):
-        c = crhelper.resource_helper.CfnResource()
+        with support.EnvironmentVarGuard() as environ: 
+            environ.set('AWS_REGION', 'us-east-1')
+            c = crhelper.resource_helper.CfnResource()
         c._context = MockContext()
         c._event = test_events["Update"]
         c._lambda_client.add_permission = Mock()
