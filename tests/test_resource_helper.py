@@ -170,6 +170,7 @@ class TestCfnResource(unittest.TestCase):
     def test_cfn_response(self):
         c = crhelper.resource_helper.CfnResource()
         event = test_events['Create']
+        c.Status = SUCCESS
         c._send = Mock()
 
         orig_pid = c.PhysicalResourceId
