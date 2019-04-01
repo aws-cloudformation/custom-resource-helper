@@ -151,11 +151,10 @@ class CfnResource(object):
             self.PhysicalResourceId = event['PhysicalResourceId']
         # Generate a physical id if none is provided
         elif not self.PhysicalResourceId or self.PhysicalResourceId is True:
-            if "PhysicalResourceId" in event.keys():
-                logger.info("PhysicalResourceId present in event, Using that for response")
-            logger.info("No physical resource id returned, generating one...")
-            self.PhysicalResourceId = event['StackId'].split('/')[1] + '_' + event[
-                'LogicalResourceId'] + '_' + self._rand_string(8)
+            if self.Status == SUCCESS:
+                logger.info("No physical resource id returned, generating one...")
+                self.PhysicalResourceId = event['StackId'].split('/')[1] + '_' + event[
+                    'LogicalResourceId'] + '_' + self._rand_string(8)
         self._send()
 
     def _poll_enabled(self):
