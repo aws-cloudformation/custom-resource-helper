@@ -261,6 +261,7 @@ class CfnResource(object):
     def _put_targets(self, func_name):
         region = self._event['CrHelperRule'].split(":")[3]
         account_id = self._event['CrHelperRule'].split(":")[4]
+        partition = self._event['CrHelperRule'].split(":")[1]
         rule_name = self._event['CrHelperRule'].split("/")[1]
         logger.debug(self._event)
         self._events_client.put_targets(
@@ -268,7 +269,7 @@ class CfnResource(object):
             Targets=[
                 {
                     'Id': '1',
-                    'Arn': 'arn:aws:lambda:%s:%s:function:%s' % (region, account_id, func_name),
+                    'Arn': 'arn:%s:lambda:%s:%s:function:%s' % (partition, region, account_id, func_name),
                     'Input': json.dumps(self._event)
                 }
             ]
