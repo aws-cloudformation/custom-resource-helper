@@ -187,7 +187,7 @@ class CfnResource(object):
 
     def _wrap_function(self, func):
         try:
-            self.PhysicalResourceId = func(self._event, self._context)
+            self.PhysicalResourceId = func(self._event, self._context) if func else ''
         except Exception as e:
             logger.error(str(e), exc_info=True)
             self.Reason = str(e)
