@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 TODO:
 * Async mode – take a wait condition handle as an input, increases max timeout to 12 hours
