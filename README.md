@@ -29,6 +29,8 @@ pip install crhelper -t .
 
 ## Example Usage
 
+[This blog](https://aws.amazon.com/blogs/infrastructure-and-automation/aws-cloudformation-custom-resource-creation-with-python-aws-lambda-and-crhelper/) covers usage in more detail.
+
 ```python
 from __future__ import print_function
 from crhelper import CfnResource
