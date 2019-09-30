@@ -68,26 +68,27 @@ def create(event, context):
 @helper.update
 def update(event, context):
     logger.info("Got Update")
-    # If the update resulted in a new resource being created, return an id for the new resource. CloudFormation will send
-    # a delete event with the old id when stack update completes
+    # If the update resulted in a new resource being created, return an id for the new resource. 
+    # CloudFormation will send a delete event with the old id when stack update completes
 
 
 @helper.delete
 def delete(event, context):
     logger.info("Got Delete")
-    # Delete never returns anything. Should not fail if the underlying resources are already deleted. Desired state.
+    # Delete never returns anything. Should not fail if the underlying resources are already deleted.
+    # Desired state.
 
 
 @helper.poll_create
 def poll_create(event, context):
     logger.info("Got create poll")
-    # Return a resource id or True to indicate that creation is complete. if True is returned an id will be generated
+    # Return a resource id or True to indicate that creation is complete. if True is returned an id 
+    # will be generated
     return True
 
 
 def handler(event, context):
     helper(event, context)
-
 ```
 
 ### Polling
