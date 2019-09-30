@@ -57,6 +57,11 @@ def create(event, context):
     # To add response data update the helper.Data dict
     # If poll is enabled data is placed into poll event as event['CrHelperData']
     helper.Data.update({"test": "testdata"})
+
+    # To return an error to cloudformation you raise an exception:
+    if not helper.Data.get("test"):
+        raise ValueError("this error will show in the cloudformation events log and console.")
+    
     return "MyResourceId"
 
 
