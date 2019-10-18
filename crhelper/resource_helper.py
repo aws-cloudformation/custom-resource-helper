@@ -145,6 +145,13 @@ class CfnResource(object):
             self._remove_polling()
             self._send_response = True
 
+    def generate_physical_id(self, event):
+        return '_'.join([
+            event['StackId'],
+            event['LogicalResourceId'],
+            self._rand_string(8)
+        ])
+
     def _cfn_response(self, event):
         # Use existing PhysicalResourceId if it's in the event and no ID was set
         if not self.PhysicalResourceId and "PhysicalResourceId" in event.keys():
@@ -155,8 +162,7 @@ class CfnResource(object):
             if "PhysicalResourceId" in event.keys():
                 logger.info("PhysicalResourceId present in event, Using that for response")
             logger.info("No physical resource id returned, generating one...")
-            self.PhysicalResourceId = event['StackId'].split('/')[1] + '_' + event[
-                'LogicalResourceId'] + '_' + self._rand_string(8)
+            self.PhysicalResourceId = self.generate_physical_id(event)
         self._send()
 
     def _poll_enabled(self):
