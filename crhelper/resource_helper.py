@@ -159,8 +159,6 @@ class CfnResource(object):
             self.PhysicalResourceId = event['PhysicalResourceId']
         # Generate a physical id if none is provided
         elif not self.PhysicalResourceId or self.PhysicalResourceId is True:
-            if "PhysicalResourceId" in event.keys():
-                logger.info("PhysicalResourceId present in event, Using that for response")
             logger.info("No physical resource id returned, generating one...")
             self.PhysicalResourceId = self.generate_physical_id(event)
         self._send()
