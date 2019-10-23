@@ -147,7 +147,7 @@ class CfnResource(object):
 
     def generate_physical_id(self, event):
         return '_'.join([
-            event['StackId'],
+            event['StackId'].split('/')[1],
             event['LogicalResourceId'],
             self._rand_string(8)
         ])
