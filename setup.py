@@ -27,8 +27,8 @@ setup(
     author_email="jmmccon@amazon.com",
     license="Apache2",
     packages=find_packages(),
-    install_requires=["requests"],
-    tests_require=["boto3", "requests"],
+    install_requires=[],
+    tests_require=["boto3"],
     test_suite="tests",
     classifiers=[
         'Programming Language :: Python :: 3.6',
