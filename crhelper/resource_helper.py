@@ -95,6 +95,7 @@ class CfnResource(object):
 
     def _wait_for_cwlogs(self, sleep=sleep):      
         time_left = int(self._context.get_remaining_time_in_millis() / 1000) - 15
+        sleep_time = 0
         
         if time_left > self._sleep_on_delete:
             sleep_time = self._sleep_on_delete
