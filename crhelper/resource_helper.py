@@ -27,7 +27,8 @@ FAILED = 'FAILED'
 
 class CfnResource(object):
 
-    def __init__(self, json_logging=False, log_level='DEBUG', boto_level='ERROR', polling_interval=2):
+    def __init__(self, json_logging=False, log_level='DEBUG', boto_level='ERROR', polling_interval=2, sleep_on_delete=120):
+        self._sleep_on_delete= sleep_on_delete
         self._create_func = None
         self._update_func = None
         self._delete_func = None
@@ -92,10 +93,12 @@ class CfnResource(object):
             if self._timer:
                 self._timer.cancel()
 
-    def _wait_for_cwlogs(self, sleep=sleep):
-        sleep_time = int(self._context.get_remaining_time_in_millis() / 1000) - 15
-        if sleep_time > 120:
-            sleep_time = 120
+    def _wait_for_cwlogs(self, sleep=sleep):      
+        time_left = int(self._context.get_remaining_time_in_millis() / 1000) - 15
+        
+        if time_left > self._sleep_on_delete:
+            sleep_time = self._sleep_on_delete
+            
         if sleep_time > 1:
             sleep(sleep_time)
 
