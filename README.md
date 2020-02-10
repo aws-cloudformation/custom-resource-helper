@@ -17,6 +17,7 @@ trapping, and detailed configurable logging.
 * JSON logging that includes request id's, stack id's and request type to assist in tracing logs relevant to a 
 particular CloudFormation event
 * Catches function timeouts and sends CloudFormation a failure response
+* Static typing (mypy) compatible
  
 ## Installation
 
