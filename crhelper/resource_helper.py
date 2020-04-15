@@ -71,7 +71,8 @@ class CfnResource(object):
         try:
             self._log_setup(event, context)
             logger.debug(event)
-            self._crhelper_init(event, context)
+            if not self._crhelper_init(event, context):
+                return
             # Check for polling functions
             if self._poll_enabled() and self._sam_local:
                 logger.info("Skipping poller functionality, as this is a local invocation")
@@ -129,9 +130,11 @@ class CfnResource(object):
         if self._timer:
             self._timer.cancel()
         if self._init_failed:
-            return self._send(FAILED, str(self._init_failed))
+            self._send(FAILED, str(self._init_failed))
+            return False
         self._set_timeout()
         self._wrap_function(self._get_func())
+        return True
 
     def _polling_init(self, event):
         # Setup polling on initial request

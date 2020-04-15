@@ -1,7 +1,7 @@
 import os
 import crhelper
 import unittest
-from unittest.mock import patch, Mock
+from unittest.mock import call, patch, Mock
 import threading
 
 test_events = {
@@ -42,16 +42,19 @@ class MockContext(object):
 
 
 class TestCfnResource(unittest.TestCase):
+    def setUp(self):
+        os.environ['AWS_REGION'] = 'us-east-1'
+
+    def tearDown(self):
+        os.environ.pop('AWS_REGION', None)
 
     @patch('crhelper.log_helper.setup', return_value=None)
     @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
     def test_init(self, mock_method):
-        with patch.dict('os.environ', {'AWS_REGION': 'us-east-1'}):
-            crhelper.resource_helper.CfnResource()
+        crhelper.resource_helper.CfnResource()
         mock_method.assert_called_once_with('DEBUG', boto_level='ERROR', formatter_cls=None)
 
-        with patch.dict('os.environ', {'AWS_REGION': 'us-east-1'}):
-            crhelper.resource_helper.CfnResource(json_logging=True)
+        crhelper.resource_helper.CfnResource(json_logging=True)
         mock_method.assert_called_with('DEBUG', boto_level='ERROR', RequestType='ContainerInit')
 
     @patch('crhelper.log_helper.setup', return_value=None)
@@ -60,6 +63,22 @@ class TestCfnResource(unittest.TestCase):
         mock_method.side_effect = Exception("test")
         c = crhelper.resource_helper.CfnResource(json_logging=True)
         self.assertTrue(c._init_failed)
+
+    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
+    @patch('crhelper.resource_helper.CfnResource._polling_init', Mock())
+    @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
+    @patch('crhelper.resource_helper.CfnResource._send')
+    @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
+    @patch('crhelper.resource_helper.CfnResource._wrap_function', Mock())
+    def test_init_failure_call(self, mock_send):
+        c = crhelper.resource_helper.CfnResource()
+        c.init_failure(Exception('TestException'))
+
+        event = test_events["Create"]
+        c.__call__(event, MockContext)
+
+        self.assertEqual([call('FAILED', 'TestException')], mock_send.call_args_list)
 
     @patch('crhelper.log_helper.setup', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
@@ -271,8 +290,7 @@ class TestCfnResource(unittest.TestCase):
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
     @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
     def test_remove_polling(self):
-        with patch.dict('os.environ', {'AWS_REGION': 'us-east-1'}):
-            c = crhelper.resource_helper.CfnResource()
+        c = crhelper.resource_helper.CfnResource()
         c._context = MockContext()
 
         c._events_client.remove_targets = Mock()
@@ -300,8 +318,7 @@ class TestCfnResource(unittest.TestCase):
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
     @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
     def test_setup_polling(self):
-        with patch.dict('os.environ', {'AWS_REGION': 'us-east-1'}):
-            c = crhelper.resource_helper.CfnResource()
+        c = crhelper.resource_helper.CfnResource()
         c._context = MockContext()
         c._event = test_events["Update"]
         c._lambda_client.add_permission = Mock()
