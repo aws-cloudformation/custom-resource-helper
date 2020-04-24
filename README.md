@@ -6,7 +6,7 @@ trapping, and detailed configurable logging.
 [![PyPI Version](https://img.shields.io/pypi/v/crhelper.svg)](https://pypi.org/project/crhelper/)
 ![Python Versions](https://img.shields.io/pypi/pyversions/crhelper.svg)
 [![Build Status](https://travis-ci.com/aws-cloudformation/custom-resource-helper.svg?branch=master)](https://travis-ci.com/aws-cloudformation/custom-resource-helper)
-[![Test Coverage](https://img.shields.io/codecov/c/github/aws-cloudformation/custom-resource-helper.svg)](https://codecov.io/github/aws-cloudformation/custom-resource-helper)
+[![Test Coverage](https://codecov.io/gh/aws-cloudformation/custom-resource-helper/branch/master/graph/badge.svg)](https://codecov.io/gh/aws-cloudformation/custom-resource-helper)
 
 ## Features
 
