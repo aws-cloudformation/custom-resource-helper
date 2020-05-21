@@ -49,6 +49,7 @@ class CfnResource(object):
         self.RequestId = ""
         self.LogicalResourceId = ""
         self.Data = {}
+        self.NoEcho = False
         self._event = {}
         self._context = None
         self._response_url = ""
@@ -233,6 +234,7 @@ class CfnResource(object):
             'LogicalResourceId': self.LogicalResourceId,
             'Reason': str(self.Reason),
             'Data': self.Data,
+            'NoEcho': self.NoEcho,
         }
         if status:
             response_body.update({'Status': status, 'Reason': reason})
