@@ -28,7 +28,7 @@ FAILED = 'FAILED'
 class CfnResource(object):
 
     def __init__(self, json_logging=False, log_level='DEBUG', boto_level='ERROR', polling_interval=2, sleep_on_delete=120):
-        self._sleep_on_delete= sleep_on_delete
+        self._sleep_on_delete = sleep_on_delete
         self._create_func = None
         self._update_func = None
         self._delete_func = None
