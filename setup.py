@@ -26,7 +26,7 @@ setup(
     author="Jay McConnell",
     author_email="jmmccon@amazon.com",
     license="Apache2",
-    packages=find_packages(),
+    packages=find_packages(exclude=("tests", "tests.*",)),
     install_requires=[],
     tests_require=["boto3"],
     test_suite="tests",
