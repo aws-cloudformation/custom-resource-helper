@@ -27,7 +27,7 @@ FAILED = 'FAILED'
 
 class CfnResource(object):
 
-    def __init__(self, json_logging=False, log_level='DEBUG', boto_level='ERROR', polling_interval=2, sleep_on_delete=120):
+    def __init__(self, json_logging=False, log_level='DEBUG', boto_level='ERROR', polling_interval=2, sleep_on_delete=120, ssl_verify=True):
         self._sleep_on_delete = sleep_on_delete
         self._create_func = None
         self._update_func = None
@@ -55,11 +55,12 @@ class CfnResource(object):
         self._response_url = ""
         self._sam_local = os.getenv('AWS_SAM_LOCAL')
         self._region = os.getenv('AWS_REGION')
+        self._ssl_verify = ssl_verify
         try:
             if not self._sam_local:
-                self._lambda_client = boto3.client('lambda', region_name=self._region)
-                self._events_client = boto3.client('events', region_name=self._region)
-                self._logs_client = boto3.client('logs', region_name=self._region)
+                self._lambda_client = boto3.client('lambda', region_name=self._region, verify=self._ssl_verify)
+                self._events_client = boto3.client('events', region_name=self._region, verify=self._ssl_verify)
+                self._logs_client = boto3.client('logs', region_name=self._region, verify=self._ssl_verify)
             if json_logging:
                 log_helper.setup(log_level, boto_level=boto_level, RequestType='ContainerInit')
             else:
