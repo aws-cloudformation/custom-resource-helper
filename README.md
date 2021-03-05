@@ -39,7 +39,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 # Initialise the helper, all inputs are optional, this example shows the defaults
-helper = CfnResource(json_logging=False, log_level='DEBUG', boto_level='CRITICAL', sleep_on_delete=120, verify=True)
+helper = CfnResource(json_logging=False, log_level='DEBUG', boto_level='CRITICAL', sleep_on_delete=120, ssl_verify=True)
 
 try:
     ## Init code goes here
@@ -122,6 +122,10 @@ attached to the function's IAM role:
   ]
 }
 ```
+### Certificate Verification
+To turn off certification verification, or to use a custom CA bundle path, override the `ssl_verify` argument with the appropriate values.  These can be either:
+* `False` - do not validate SSL certificates. SSL will still be used, but SSL certificates will not be verified.
+* `path/to/cert/bundle.pem` - A filename of the CA cert bundle to uses. You can specify this argument if you want to use a different CA cert bundle than the one used by botocore.
 
 ## Credits
 
