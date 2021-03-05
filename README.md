@@ -123,7 +123,7 @@ attached to the function's IAM role:
 }
 ```
 ### Certificate Verification
-To turn off certification verification, or to use a custom CA bundle path, override the `ssl_verify` argument with the appropriate values.  These can be either:
+To turn off certification verification, or to use a custom CA bundle path for the underlying boto3 clients used by this library, override the `ssl_verify` argument with the appropriate values.  These can be either:
 * `False` - do not validate SSL certificates. SSL will still be used, but SSL certificates will not be verified.
 * `path/to/cert/bundle.pem` - A filename of the CA cert bundle to uses. You can specify this argument if you want to use a different CA cert bundle than the one used by botocore.
 
