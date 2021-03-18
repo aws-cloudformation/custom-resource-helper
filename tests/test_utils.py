@@ -2,7 +2,6 @@ import json
 from unittest.mock import patch, Mock, ANY
 from crhelper import utils
 import unittest
-import ssl
 
 
 class TestLogHelper(unittest.TestCase):
