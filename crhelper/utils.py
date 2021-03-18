@@ -12,7 +12,7 @@ from urllib.parse import urlsplit, urlunsplit
 logger = logging.getLogger(__name__)
 
 
-def _send_response(response_url: AnyStr, response_body: AnyStr, ssl_verify: Union[bool, AnyStr, None] = True):
+def _send_response(response_url: AnyStr, response_body: AnyStr, ssl_verify: Union[bool, AnyStr] = True):
     try:
         json_response_body = json.dumps(response_body)
     except Exception as e:
