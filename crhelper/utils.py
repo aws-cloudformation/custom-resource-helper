@@ -27,10 +27,11 @@ def _send_response(response_url: AnyStr, response_body: AnyStr, ssl_verify: Unio
     host = split_url.netloc
     url = urlunsplit(("", "", *split_url[2:]))
     ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-    if isinstance(ssl_verify, str) and path.exists(ssl_verify):
-        ctx.load_verify_locations(cafile=ssl_verify)
-    else:
-        logger.warning("Cert path {0} does not exist!.  Falling back to using system cafile.".format(ssl_verify))
+    if isinstance(ssl_verify, str):
+        if path.exists(ssl_verify):
+            ctx.load_verify_locations(cafile=ssl_verify)
+        else:
+            logger.warning("Cert path {0} does not exist!.  Falling back to using system cafile.".format(ssl_verify))
     if ssl_verify is False:
         ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
