@@ -1,5 +1,5 @@
 import json
-from unittest.mock import patch, Mock
+from unittest.mock import patch, Mock, ANY
 from crhelper import utils
 import unittest
 
@@ -10,7 +10,7 @@ class TestLogHelper(unittest.TestCase):
     @patch('crhelper.utils.HTTPSConnection', autospec=True)
     def test_send_succeeded_response(self, https_connection_mock):
         utils._send_response(self.TEST_URL, {})
-        https_connection_mock.assert_called_once_with("test_url")
+        https_connection_mock.assert_called_once_with("test_url", context=ANY)
         https_connection_mock.return_value.request.assert_called_once_with(
             body='{}',
             headers={"content-type": "", "content-length": "2"},
@@ -21,7 +21,7 @@ class TestLogHelper(unittest.TestCase):
     @patch('crhelper.utils.HTTPSConnection', autospec=True)
     def test_send_failed_response(self, https_connection_mock):
         utils._send_response(self.TEST_URL, Mock())
-        https_connection_mock.assert_called_once_with("test_url")
+        https_connection_mock.assert_called_once_with("test_url", context=ANY)
         response = json.loads(https_connection_mock.return_value.request.call_args[1]["body"])
         expected_body = '{"Status": "FAILED", "Data": {}, "Reason": "' + response["Reason"] + '"}'
         https_connection_mock.return_value.request.assert_called_once_with(

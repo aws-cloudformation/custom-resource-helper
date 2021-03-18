@@ -239,7 +239,7 @@ class CfnResource(object):
         }
         if status:
             response_body.update({'Status': status, 'Reason': reason})
-        send_response(self._response_url, response_body)
+        send_response(self._response_url, response_body, self._ssl_verify)
 
     def init_failure(self, error):
         self._init_failed = error

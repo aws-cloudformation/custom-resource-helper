@@ -1,14 +1,18 @@
 from __future__ import print_function
+
 import json
 import logging as logging
+import ssl
 import time
-from urllib.parse import urlsplit, urlunsplit
 from http.client import HTTPSConnection
+from os import path
+from typing import Union, AnyStr
+from urllib.parse import urlsplit, urlunsplit
 
 logger = logging.getLogger(__name__)
 
 
-def _send_response(response_url, response_body):
+def _send_response(response_url: AnyStr, response_body: AnyStr, ssl_verify: Union[bool, AnyStr] = True):
     try:
         json_response_body = json.dumps(response_body)
     except Exception as e:
@@ -22,9 +26,19 @@ def _send_response(response_url, response_body):
     split_url = urlsplit(response_url)
     host = split_url.netloc
     url = urlunsplit(("", "", *split_url[2:]))
+    ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+    if isinstance(ssl_verify, str):
+        if path.exists(ssl_verify):
+            ctx.load_verify_locations(cafile=ssl_verify)
+        else:
+            logger.warning("Cert path {0} does not exist!.  Falling back to using system cafile.".format(ssl_verify))
+    if ssl_verify is False:
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+    # If ssl_verify is True dont modify the context in any way.
     while True:
         try:
-            connection = HTTPSConnection(host)
+            connection = HTTPSConnection(host, context=ctx)
             connection.request(method="PUT", url=url, body=json_response_body, headers=headers)
             response = connection.getresponse()
             logger.info("CloudFormation returned status code: {}".format(response.reason))
