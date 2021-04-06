@@ -12,7 +12,7 @@ from urllib.parse import urlsplit, urlunsplit
 logger = logging.getLogger(__name__)
 
 
-def _send_response(response_url: AnyStr, response_body: AnyStr, ssl_verify: Union[bool, AnyStr] = True):
+def _send_response(response_url: AnyStr, response_body: AnyStr, ssl_verify: Union[bool, AnyStr] = None):
     try:
         json_response_body = json.dumps(response_body)
     except Exception as e:
@@ -35,7 +35,7 @@ def _send_response(response_url: AnyStr, response_body: AnyStr, ssl_verify: Unio
     if ssl_verify is False:
         ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
-    # If ssl_verify is True dont modify the context in any way.
+    # If ssl_verify is True or None dont modify the context in any way.
     while True:
         try:
             connection = HTTPSConnection(host, context=ctx)
