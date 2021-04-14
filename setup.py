@@ -18,7 +18,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="crhelper",
-    version="2.0.9",
+    version="2.0.10",
     description="crhelper simplifies authoring CloudFormation Custom Resources",
     long_description=long_description,
     long_description_content_type="text/markdown",
