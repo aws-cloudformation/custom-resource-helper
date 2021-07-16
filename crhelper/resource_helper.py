@@ -11,6 +11,7 @@ from __future__ import print_function
 import threading
 from crhelper.utils import _send_response
 from crhelper import log_helper
+from botocore import config
 import logging
 import random
 import boto3
@@ -27,7 +28,7 @@ FAILED = 'FAILED'
 
 class CfnResource(object):
 
-    def __init__(self, json_logging=False, log_level='DEBUG', boto_level='ERROR', polling_interval=2, sleep_on_delete=120, ssl_verify=None):
+    def __init__(self, json_logging=False, log_level='DEBUG', boto_level='ERROR', polling_interval=2, sleep_on_delete=120, ssl_verify=None, botocore_config={}):
         self._sleep_on_delete = sleep_on_delete
         self._create_func = None
         self._update_func = None
@@ -40,6 +41,7 @@ class CfnResource(object):
         self._json_logging = json_logging
         self._log_level = log_level
         self._boto_level = boto_level
+        self._botocore_config = botocore_config
         self._send_response = False
         self._polling_interval = polling_interval
         self.Status = ""
@@ -58,9 +60,9 @@ class CfnResource(object):
         self._ssl_verify = ssl_verify
         try:
             if not self._sam_local:
-                self._lambda_client = boto3.client('lambda', region_name=self._region, verify=self._ssl_verify)
-                self._events_client = boto3.client('events', region_name=self._region, verify=self._ssl_verify)
-                self._logs_client = boto3.client('logs', region_name=self._region, verify=self._ssl_verify)
+                self._lambda_client = self._construct_boto3_client('lambda', region_name=self._region, verify=self._ssl_verify)
+                self._events_client = self._construct_boto3_client('events', region_name=self._region, verify=self._ssl_verify)
+                self._logs_client = self._construct_boto3_client('logs', region_name=self._region, verify=self._ssl_verify)
             if json_logging:
                 log_helper.setup(log_level, boto_level=boto_level, RequestType='ContainerInit')
             else:
@@ -95,6 +97,10 @@ class CfnResource(object):
         finally:
             if self._timer:
                 self._timer.cancel()
+
+    def _construct_boto3_client(self, service, **kwargs):
+        botocore_config = config.Config(**self._botocore_config)
+        return boto3.client(service, config=botocore_config, **kwargs)
 
     def _wait_for_cwlogs(self, sleep=sleep):
         time_left = int(self._context.get_remaining_time_in_millis() / 1000) - 15
