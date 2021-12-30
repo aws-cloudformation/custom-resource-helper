@@ -23,7 +23,7 @@ particular CloudFormation event
 
 Install into the root folder of your lambda function
 
-```json
+```shell
 cd my-lambda-function/
 pip install crhelper -t .
 ```
