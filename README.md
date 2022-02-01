@@ -103,7 +103,7 @@ in 2 minutes. Once complete either return a PhysicalResourceID or `True` to have
 deleted and a response sent back to CloudFormation. If you use polling the following additional IAM policy must be 
 attached to the function's IAM role:
 
-```yaml
+```json
 {
   "Version": "2012-10-17",
   "Statement": [
