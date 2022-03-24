@@ -266,9 +266,10 @@ class CfnResource(object):
         return sid
 
     def _put_rule(self):
+        schedule_unit = 'minutes' if self._polling_interval != 1 else 'minute'
         response = self._events_client.put_rule(
             Name=self._event['LogicalResourceId'] + self._rand_string(8),
-            ScheduleExpression='rate({} minutes)'.format(self._polling_interval),
+            ScheduleExpression='rate({} {})'.format(self._polling_interval, schedule_unit),
             State='ENABLED',
         )
         return response["RuleArn"]
