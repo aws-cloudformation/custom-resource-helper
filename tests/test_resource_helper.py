@@ -317,6 +317,7 @@ class TestCfnResource(unittest.TestCase):
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
     @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
+    @patch('crhelper.resource_helper.CfnResource._rand_string', Mock(return_value='PLURAL=1'))
     def test_setup_polling(self):
         c = crhelper.resource_helper.CfnResource()
         c._context = MockContext()
@@ -326,7 +327,25 @@ class TestCfnResource(unittest.TestCase):
         c._events_client.put_targets = Mock()
         c._setup_polling()
         c._events_client.put_targets.assert_called()
-        c._events_client.put_rule.assert_called()
+        c._events_client.put_rule.assert_called_with(Name='TestResourceIdPLURAL=1', ScheduleExpression='rate(2 minutes)', State='ENABLED')
+        c._lambda_client.add_permission.assert_called()
+
+    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
+    @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
+    @patch('crhelper.resource_helper.CfnResource._send', Mock())
+    @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
+    @patch('crhelper.resource_helper.CfnResource._rand_string', Mock(return_value='PLURAL=0'))
+    def test_setup_polling_plural_0(self):
+        c = crhelper.resource_helper.CfnResource(polling_interval=1)
+        c._context = MockContext()
+        c._event = test_events["Update"]
+        c._lambda_client.add_permission = Mock()
+        c._events_client.put_rule = Mock(return_value={"RuleArn": "arn:aws:lambda:blah:blah:function:blah/blah"})
+        c._events_client.put_targets = Mock()
+        c._setup_polling()
+        c._events_client.put_targets.assert_called()
+        c._events_client.put_rule.assert_called_with(Name='TestResourceIdPLURAL=0', ScheduleExpression='rate(1 minute)', State='ENABLED')
         c._lambda_client.add_permission.assert_called()
 
     @patch('crhelper.log_helper.setup', Mock())
