@@ -12,7 +12,7 @@ class TestLogHelper(unittest.TestCase):
         orig_formatters = []
         for c in range(len(logging.root.handlers)):
             orig_formatters.append(logging.root.handlers[c].formatter)
-        setup(level='DEBUG', formatter_cls=None, boto_level='CRITICAL')
+        setupLogger(level='DEBUG', formatter_cls=None, boto_level='CRITICAL')
         new_formatters = []
         for c in range(len(logging.root.handlers)):
             new_formatters.append(logging.root.handlers[c].formatter)
@@ -22,7 +22,7 @@ class TestLogHelper(unittest.TestCase):
         logger = logging.getLogger('2')
         handler = logging.StreamHandler()
         logger.addHandler(handler)
-        setup(level='DEBUG', formatter_cls=None, boto_level='CRITICAL')
+        setupLogger(level='DEBUG', formatter_cls=None, boto_level='CRITICAL')
         for t in ['boto', 'boto3', 'botocore', 'urllib3']:
             b_logger = logging.getLogger(t)
             self.assertEqual(b_logger.level, 50)
@@ -31,7 +31,7 @@ class TestLogHelper(unittest.TestCase):
         logger = logging.getLogger('3')
         handler = logging.StreamHandler()
         logger.addHandler(handler)
-        setup(level='DEBUG', formatter_cls=JsonFormatter, RequestType='ContainerInit')
+        setupLogger(level='DEBUG', formatter_cls=JsonFormatter, RequestType='ContainerInit')
         for handler in logging.root.handlers:
             self.assertEqual(JsonFormatter, type(handler.formatter))
 
@@ -39,7 +39,7 @@ class TestLogHelper(unittest.TestCase):
         logger = logging.getLogger('4')
         handler = logging.StreamHandler()
         logger.addHandler(handler)
-        setup(level='DEBUG', formatter_cls=JsonFormatter, RequestType='ContainerInit')
+        setupLogger(level='DEBUG', formatter_cls=JsonFormatter, RequestType='ContainerInit')
         for t in ['boto', 'boto3', 'botocore', 'urllib3']:
             b_logger = logging.getLogger(t)
             self.assertEqual(b_logger.level, 10)
@@ -49,7 +49,7 @@ class TestLogHelper(unittest.TestCase):
             logger = logging.getLogger()
             handler = logging.StreamHandler()
             logger.addHandler(handler)
-            setup(level='DEBUG', formatter_cls=JsonFormatter, RequestType='ContainerInit')
+            setupLogger(level='DEBUG', formatter_cls=JsonFormatter, RequestType='ContainerInit')
             logger.info("test")
             logs = json.loads(ctx.output[0])
         self.assertEqual(["timestamp", "level", "location", "RequestType", "message"], list(logs.keys()))
@@ -59,7 +59,7 @@ class TestLogHelper(unittest.TestCase):
             logger = logging.getLogger()
             handler = logging.StreamHandler()
             logger.addHandler(handler)
-            setup(level='DEBUG', formatter_cls=JsonFormatter, RequestType='ContainerInit')
+            setupLogger(level='DEBUG', formatter_cls=JsonFormatter, RequestType='ContainerInit')
             logger.info("{}")
             logs = json.loads(ctx.output[0])
         self.assertEqual({}, logs["message"])
@@ -69,7 +69,7 @@ class TestLogHelper(unittest.TestCase):
             logger = logging.getLogger()
             handler = logging.StreamHandler()
             logger.addHandler(handler)
-            setup(level='DEBUG', formatter_cls=JsonFormatter, RequestType='ContainerInit')
+            setupLogger(level='DEBUG', formatter_cls=JsonFormatter, RequestType='ContainerInit')
             try:
                 1 + 't'
             except Exception as e:
