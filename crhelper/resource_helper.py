@@ -62,9 +62,9 @@ class CfnResource(object):
                 self._events_client = boto3.client('events', region_name=self._region, verify=self._ssl_verify)
                 self._logs_client = boto3.client('logs', region_name=self._region, verify=self._ssl_verify)
             if json_logging:
-                log_helper.setup(log_level, boto_level=boto_level, RequestType='ContainerInit')
+                log_helper.setupLogger(log_level, boto_level=boto_level, RequestType='ContainerInit')
             else:
-                log_helper.setup(log_level, formatter_cls=None, boto_level=boto_level)
+                log_helper.setupLogger(log_level, formatter_cls=None, boto_level=boto_level)
         except Exception as e:
             logger.error(e, exc_info=True)
             self.init_failure(e)
@@ -108,11 +108,11 @@ class CfnResource(object):
 
     def _log_setup(self, event, context):
         if self._json_logging:
-            log_helper.setup(self._log_level, boto_level=self._boto_level, RequestType=event['RequestType'],
+            log_helper.setupLogger(self._log_level, boto_level=self._boto_level, RequestType=event['RequestType'],
                              StackId=event['StackId'], RequestId=event['RequestId'],
                              LogicalResourceId=event['LogicalResourceId'], aws_request_id=context.aws_request_id)
         else:
-            log_helper.setup(self._log_level, boto_level=self._boto_level, formatter_cls=None)
+            log_helper.setupLogger(self._log_level, boto_level=self._boto_level, formatter_cls=None)
 
     def _crhelper_init(self, event, context):
         self._send_response = False
