@@ -127,6 +127,35 @@ To turn off certification verification, or to use a custom CA bundle path for th
 * `False` - do not validate SSL certificates. SSL will still be used, but SSL certificates will not be verified.
 * `path/to/cert/bundle.pem` - A filename of the CA cert bundle to uses. You can specify this argument if you want to use a different CA cert bundle than the one used by botocore.
 
+### Use CDK to depoy a Custom Resource that uses Custom Resource Helper
+
+You can use the [AWS Cloud Development Kit (AWS CDK)](https://docs.aws.amazon.com/cdk/v2/guide/home.html) to deploy a Custom Resource that uses Custom Resource Helper. AWS CDK is an open-source software development framework for defining cloud infrastructure in code and provisioning it through AWS CloudFormation.
+
+**Note**: `crhelper` is not intended to be used with AWS CDK using the (Provider)[https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.custom_resources.Provider.html] construct.
+
+#### AWS CDK template example
+```
+from aws_cdk import (
+    ...
+    aws_lambda as _lambda,
+    CustomResource,
+)
+
+crhelperSumResource = _lambda.Function(...)
+
+customResource = CustomResource(
+  self, 
+  'MyCustomResource'
+  serviceToken = crhelperSumResource.function_arn,
+  properties = {
+    'No1': 1,
+    'No2': 2
+  },
+)
+
+
+```
+
 ## Credits
 
 Decorator implementation inspired by https://github.com/ryansb/cfn-wrapper-python
