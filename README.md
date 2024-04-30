@@ -131,7 +131,7 @@ To turn off certification verification, or to use a custom CA bundle path for th
 
 You can use the [AWS Cloud Development Kit (AWS CDK)](https://docs.aws.amazon.com/cdk/v2/guide/home.html) to deploy a Custom Resource that uses Custom Resource Helper. AWS CDK is an open-source software development framework for defining cloud infrastructure in code and provisioning it through AWS CloudFormation.
 
-**Note**: `crhelper` is not intended to be used with AWS CDK using the (Provider)[https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.custom_resources.Provider.html] construct.
+**Note**: `crhelper` is not intended to be used with AWS CDK using the [Provider](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.custom_resources.Provider.html) construct.
 
 #### AWS CDK template example
 ```
