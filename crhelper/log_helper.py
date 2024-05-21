@@ -67,12 +67,12 @@ class JsonFormatter(logging.Formatter):
         return json_record
 
 
-def setup(level='DEBUG', formatter_cls=JsonFormatter, boto_level=None, **kwargs):
+def setupLogger(level='DEBUG', formatter_cls=JsonFormatter, boto_level=None, **kwargs):
     if formatter_cls:
         for handler in logging.root.handlers:
             handler.setFormatter(formatter_cls(**kwargs))
 
-    logging.root.setLevel(level)
+    logging.root.setLevel(level=level)
 
     if not boto_level:
         boto_level = level

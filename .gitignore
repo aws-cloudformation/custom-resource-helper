@@ -10,3 +10,4 @@ coverage.xml
 /build/
 *.egg-info/
 /.mypy_cache/
+.env/
