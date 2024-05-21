@@ -224,9 +224,9 @@ class CfnResource(object):
 
     def _send(self, status=None, reason="", send_response=_send_response):
         if len(str(str(self.Reason))) > 256:
-            self.Reason = "ERROR: (truncated) " + str(self.Reason)[len(str(self.Reason)) - 240:]
+            self.Reason = "ERROR: (truncated) " + str(self.Reason)[:240]
         if len(str(reason)) > 256:
-            reason = "ERROR: (truncated) " + str(reason)[len(str(reason)) - 240:]
+            reason = "ERROR: (truncated) " + str(reason)[:240]
         response_body = {
             'Status': self.Status,
             'PhysicalResourceId': str(self.PhysicalResourceId),
