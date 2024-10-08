@@ -10,7 +10,7 @@ from typing import Union, AnyStr
 from urllib.parse import urlsplit, urlunsplit
 
 logger = logging.getLogger(__name__)
-
+MAX_RETRIES = 5  # Maximum number of retries
 
 def _send_response(response_url: AnyStr, response_body: AnyStr, ssl_verify: Union[bool, AnyStr] = None):
     try:
@@ -36,13 +36,23 @@ def _send_response(response_url: AnyStr, response_body: AnyStr, ssl_verify: Unio
         ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
     # If ssl_verify is True or None dont modify the context in any way.
+
     while True:
-        try:
-            connection = HTTPSConnection(host, context=ctx)
-            connection.request(method="PUT", url=url, body=json_response_body, headers=headers)
-            response = connection.getresponse()
-            logger.info("CloudFormation returned status code: {}".format(response.reason))
+        retry_count = 0
+        success = False
+        while retry_count < MAX_RETRIES and not success:
+            try:
+                connection = HTTPSConnection(host, context=ctx)
+                connection.request(method="PUT", url=url, body=json_response_body, headers=headers)
+                response = connection.getresponse()
+                logger.info("CloudFormation returned status code: {}".format(response.reason))
+                success = True
+            except Exception as e:
+                retry_count += 1
+                logger.error("Unexpected failure sending response to CloudFormation {}. Retrying in 2 seconds...".format(e), exc_info=True)
+                time.sleep(2)
+        if success:
             break
-        except Exception as e:
-            logger.error("Unexpected failure sending response to CloudFormation {}".format(e), exc_info=True)
+        else:
+            logger.error("Maximum retries reached. Unable to send response to CloudFormation.")
             time.sleep(5)
