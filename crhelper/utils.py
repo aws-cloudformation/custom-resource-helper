@@ -49,7 +49,7 @@ def _send_response(response_url: AnyStr, response_body: AnyStr, ssl_verify: Unio
                 success = True
             except Exception as e:
                 retry_count += 1
-                logger.error("Unexpected failure sending response to CloudFormation {}. Retrying in 5 seconds...".format(e), exc_info=True)
+                logger.error("Unexpected failure sending response to CloudFormation {}. Retrying in 2 seconds...".format(e), exc_info=True)
                 time.sleep(2)
         if success:
             break
