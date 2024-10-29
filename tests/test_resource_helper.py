@@ -48,7 +48,7 @@ class TestCfnResource(unittest.TestCase):
     def tearDown(self):
         os.environ.pop('AWS_REGION', None)
 
-    @patch('crhelper.log_helper.setup', return_value=None)
+    @patch('crhelper.log_helper.setupLogger', return_value=None)
     @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
     def test_init(self, mock_method):
         crhelper.resource_helper.CfnResource()
@@ -57,14 +57,14 @@ class TestCfnResource(unittest.TestCase):
         crhelper.resource_helper.CfnResource(json_logging=True)
         mock_method.assert_called_with('DEBUG', boto_level='ERROR', RequestType='ContainerInit')
 
-    @patch('crhelper.log_helper.setup', return_value=None)
+    @patch('crhelper.log_helper.setupLogger', return_value=None)
     @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
     def test_init_failure(self, mock_method):
         mock_method.side_effect = Exception("test")
         c = crhelper.resource_helper.CfnResource(json_logging=True)
         self.assertTrue(c._init_failed)
 
-    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.log_helper.setupLogger', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._polling_init', Mock())
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
@@ -80,7 +80,7 @@ class TestCfnResource(unittest.TestCase):
 
         self.assertEqual([call('FAILED', 'TestException')], mock_send.call_args_list)
 
-    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.log_helper.setupLogger', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._polling_init', Mock())
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
@@ -119,7 +119,7 @@ class TestCfnResource(unittest.TestCase):
         c.__call__(event, MockContext)
         c._send.assert_called_with('FAILED', "test")
 
-    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.log_helper.setupLogger', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._polling_init', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
@@ -137,7 +137,7 @@ class TestCfnResource(unittest.TestCase):
         c._wait_for_cwlogs(sleep=s)
         s.assert_called_once()
 
-    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.log_helper.setupLogger', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
@@ -178,7 +178,7 @@ class TestCfnResource(unittest.TestCase):
         c._remove_polling.assert_called()
         c._setup_polling.assert_not_called()
 
-    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.log_helper.setupLogger', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
@@ -215,7 +215,7 @@ class TestCfnResource(unittest.TestCase):
         c._send.assert_called_once()
         self.assertEqual('pid-from-event', c.PhysicalResourceId)
 
-    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.log_helper.setupLogger', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
@@ -237,7 +237,7 @@ class TestCfnResource(unittest.TestCase):
         self.assertEqual('FAILED', c.Status)
         self.assertEqual('test exception', c.Reason)
 
-    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.log_helper.setupLogger', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._set_timeout', Mock())
@@ -247,7 +247,7 @@ class TestCfnResource(unittest.TestCase):
         c._send(send_response=s)
         s.assert_called_once()
 
-    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.log_helper.setupLogger', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', return_value=None)
@@ -257,7 +257,7 @@ class TestCfnResource(unittest.TestCase):
         c._timeout()
         s.assert_called_with('FAILED', "Execution timed out")
 
-    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.log_helper.setupLogger', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
@@ -273,7 +273,7 @@ class TestCfnResource(unittest.TestCase):
         t.cancel()
         c._timer.cancel()
 
-    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.log_helper.setupLogger', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
@@ -284,7 +284,7 @@ class TestCfnResource(unittest.TestCase):
         c._cleanup_response()
         self.assertEqual({}, c.Data)
 
-    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.log_helper.setupLogger', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
@@ -312,7 +312,7 @@ class TestCfnResource(unittest.TestCase):
         c._events_client.delete_rule.assert_called()
         c._lambda_client.remove_permission.assert_called()
 
-    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.log_helper.setupLogger', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
@@ -330,7 +330,7 @@ class TestCfnResource(unittest.TestCase):
         c._events_client.put_rule.assert_called_with(Name='TestResourceIdPLURAL=1', ScheduleExpression='rate(2 minutes)', State='ENABLED')
         c._lambda_client.add_permission.assert_called()
 
-    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.log_helper.setupLogger', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
@@ -348,7 +348,7 @@ class TestCfnResource(unittest.TestCase):
         c._events_client.put_rule.assert_called_with(Name='TestResourceIdPLURAL=0', ScheduleExpression='rate(1 minute)', State='ENABLED')
         c._lambda_client.add_permission.assert_called()
 
-    @patch('crhelper.log_helper.setup', Mock())
+    @patch('crhelper.log_helper.setupLogger', Mock())
     @patch('crhelper.resource_helper.CfnResource._poll_enabled', Mock(return_value=False))
     @patch('crhelper.resource_helper.CfnResource._wait_for_cwlogs', Mock())
     @patch('crhelper.resource_helper.CfnResource._send', Mock())
